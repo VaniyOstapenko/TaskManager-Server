@@ -1,9 +1,16 @@
-const { getAllTasksDB, createTaskDB, deleteTaskDB, patchTaskByIdDB } = require('../repository/task.repository')
+const { getAllTasksDB, getTaskByIdDB, createTaskDB, deleteTaskDB, patchTaskByIdDB } = require('../repository/task.repository')
 const ExceptionType = require('../exception/exception')
 
 async function getAllTasks() {
     const data = await getAllTasksDB();
     if (!data.length) throw new Error(ExceptionType.DB_GET_TASKS_NOT_FOUND);
+
+    return data;
+}
+
+async function getTaskById(id) {
+    const data = await getTaskByIdDB(id);
+    if (!data.length) throw new Error(ExceptionType.DB_GET_TASK_BY_ID_NOT_FOUND);
 
     return data;
 }
@@ -28,4 +35,4 @@ async function deleteTask(id) {
 
     return data;
 }
-module.exports = { getAllTasks, createTask, deleteTask, patchTaskById };
+module.exports = { getAllTasks, getTaskById, createTask, deleteTask, patchTaskById };

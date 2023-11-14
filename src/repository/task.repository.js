@@ -9,6 +9,15 @@ async function getAllTasksDB() {
     return data;
 }
 
+async function getTaskByIdDB(id) {
+    const client = await pool.connect();
+    const sql = 'SELECT * FROM tasks WHERE id =$1';
+
+    const data = (await client.query(sql, [id])).rows;
+
+    return data;
+}
+
 async function createTaskDB(task, user_id) {
     const client = await pool.connect();
     const sql = `INSERT INTO tasks(task, user_id) VALUES
@@ -43,4 +52,4 @@ async function deleteTaskDB(id) {
     return data;
 }
 
-module.exports = { getAllTasksDB, createTaskDB, deleteTaskDB, patchTaskByIdDB };
+module.exports = { getAllTasksDB, getTaskByIdDB, createTaskDB, deleteTaskDB, patchTaskByIdDB };
