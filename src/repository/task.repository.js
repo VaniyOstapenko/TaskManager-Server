@@ -43,6 +43,15 @@ async function patchTaskByIdDB(id, clientObj) {
     return data;
 }
 
+async function updateTaskDB(id, task, user_id) {
+    const client = await pool.connect();
+    const sql = 'UPDATE tasks SET task =$1, user_id =$2 WHERE id =$3 returning *';
+
+    const data = (await client.query(sql, [task, user_id, id])).rows;
+
+    return data;
+}
+
 async function deleteTaskDB(id) {
     const client = await pool.connect();
     const sql = 'DELETE FROM tasks WHERE id =$1 returning *';
@@ -52,4 +61,4 @@ async function deleteTaskDB(id) {
     return data;
 }
 
-module.exports = { getAllTasksDB, getTaskByIdDB, createTaskDB, deleteTaskDB, patchTaskByIdDB };
+module.exports = { getAllTasksDB, getTaskByIdDB, createTaskDB, deleteTaskDB, patchTaskByIdDB, updateTaskDB };
