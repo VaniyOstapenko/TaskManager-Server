@@ -17,12 +17,12 @@ const ExceptionType = {
     USER_PWD_INVALID: 'password is not found',
     USER_EMAIL_INVALID: 'email is not found',
 
-    DB_GET_USER_NOT_FOUND: 'table tasks is empty',
-    DB_GET_USER_BY_ID_NOT_FOUND: 'task by id is not found',
-    DB_POST_USER_NOT_CREATE: 'task does not create',
-    DB_PUT_USER_NOT_UPDATE: 'task does not update',
-    DB_DELETE_USER_NOT_DELETE: 'task does not delete',
-    DB_PATCH_USER_NOT_PATCH: 'task does not patch',
+    DB_GET_USER_NOT_FOUND: 'table users is empty',
+    DB_GET_USER_BY_ID_NOT_FOUND: 'users by id is not found',
+    DB_POST_USER_NOT_CREATE: 'users does not create',
+    DB_PUT_USER_NOT_UPDATE: 'users does not update',
+    DB_DELETE_USER_NOT_DELETE: 'users does not delete',
+    DB_PATCH_USER_NOT_PATCH: 'users does not patch',
 }
 
 module.exports = ExceptionType;
