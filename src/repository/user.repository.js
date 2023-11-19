@@ -20,46 +20,91 @@ async function getUserByIdDB(id) {
 
 async function createUsersDB(name, surname, email, pwd) {
   const client = await pool.connect();
-  const sql = `INSERT INTO users(name, surname, email, pwd) VALUES
+  try {
+    await client.query('BEGIN');
+
+    const sql = `INSERT INTO users(name, surname, email, pwd) VALUES
     ($1, $2, $3, $4) returning *`;
 
-  const data = (await client.query(sql, [name, surname, email, pwd])).rows;
+    const data = (await client.query(sql, [name, surname, email, pwd])).rows;
 
-  return data;
+    await client.query('COMMIT');
+
+    return data;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.log(`createUsersDB: ${error.message}`);
+
+    return [];
+  }
 }
 
 async function updateUserByIdDB(id, name, surname, email, pwd) {
   const client = await pool.connect();
-  const sql = `UPDATE users SET name =$1, surname =$2, email =$3, pwd =$4
+
+  try {
+    const sql = `UPDATE users SET name =$1, surname =$2, email =$3, pwd =$4
     WHERE id =$5 returning *`;
 
-  const data = (await client.query(sql, [name, surname, email, pwd, id])).rows;
+    const data = (await client.query(sql, [name, surname, email, pwd, id])).rows;
 
-  return data;
+    await client.query('COMMIT');
+
+    return data;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.log(`updateUserDB: ${error.message}`);
+
+    return [];
+  }
 }
 
 async function patchUserByIdDB(id, clientObj) {
   const client = await pool.connect();
-  const sql = `SELECT * FROM users WHERE id =$1`;
-  const oldObj = (await client.query(sql, [id])).rows;
 
-  const newObj = { ...oldObj[0], ...clientObj };
+  try {
+    await client.query('BEGIN');
 
-  const sqlUpdate = `UPDATE users SET name =$1, surname =$2, email =$3, 
+    const sql = `SELECT * FROM users WHERE id =$1`;
+    const oldObj = (await client.query(sql, [id])).rows;
+
+    const newObj = { ...oldObj[0], ...clientObj };
+
+    const sqlUpdate = `UPDATE users SET name =$1, surname =$2, email =$3, 
     pwd =$4 WHERE id =$5 returning *`;
 
-  const result = (await client.query(sqlUpdate, [newObj.name, newObj.surname, newObj.email, newObj.pwd, id])).rows;
+    const result = (await client.query(sqlUpdate, [newObj.name, newObj.surname, newObj.email, newObj.pwd, id])).rows;
 
-  return result;
+    await client.query('COMMIT');
+
+    return result;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.log(`patchUserDB: ${error.message}`);
+
+    return [];
+  }
 }
 
 async function deleteUserByIdDB(id) {
   const client = await pool.connect();
-  const sql = `DELETE FROM users WHERE id =$1 returning *`;
 
-  const data = (await client.query(sql, [id])).rows;
+  try {
+    await client.query('BEGIN');
 
-  return data;
+    const sql = `DELETE FROM users WHERE id =$1 returning *`;
+
+    const data = (await client.query(sql, [id])).rows;
+
+    await client.query('COMMIT');
+
+    return data;
+  } catch (error) {
+    await client.query('ROLLBAK');
+    console.log(`deleteUserDB: ${error.message}`);
+
+    return [];
+  }
 }
 
 module.exports = { getAllUsersDB, createUsersDB, getUserByIdDB, updateUserByIdDB, patchUserByIdDB, deleteUserByIdDB };
