@@ -40,33 +40,6 @@ async function createTaskDB(task, user_id) {
   }
 }
 
-async function patchTaskByIdDB(id, clientObj) {
-  const client = await pool.connect();
-
-  try {
-    await client.query('BEGIN');
-
-    const sql = 'SELECT * FROM tasks WHERE id =$1';
-
-    const oldObj = (await client.query(sql, [id])).rows;
-
-    const newObj = { ...oldObj[0], ...clientObj };
-
-    const newSql = `UPDATE tasks SET task =$1, user_id =$2 WHERE id =$3 returning *`;
-
-    const data = (await client.query(newSql, [newObj.task, newObj.user_id, id])).rows;
-
-    await client.query('COMMIT');
-
-    return data;
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.log(`patchTaskDB: ${error.message}`);
-
-    return [];
-  }
-}
-
 async function updateTaskDB(id, task, user_id) {
   const client = await pool.connect();
 
@@ -109,4 +82,28 @@ async function deleteTaskDB(id) {
   }
 }
 
-module.exports = { getAllTasksDB, getTaskByIdDB, createTaskDB, deleteTaskDB, patchTaskByIdDB, updateTaskDB };
+async function patchTaskByIdDB(id, clientObj) {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const sql1 = `SELECT * FROM tasks WHERE id =$1`;
+    const oldObj = (await client.query(sql1, [id])).rows;
+
+    const newObj = { ...oldObj[0], ...clientObj };
+
+    const sql2 = `UPDATE tasks SET task =$1, user_id =$2 WHERE id =$3 RETURNING *`;
+    const data = (await client.query(sql2, [newObj.task, newObj.user_id, id])).rows;
+    await client.query('COMMIT');
+
+    return data;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.log(`patchTaskById: ${error.message}`);
+
+    return [];
+  }
+}
+
+module.exports = { getAllTasksDB, getTaskByIdDB, createTaskDB, deleteTaskDB, updateTaskDB, patchTaskByIdDB };

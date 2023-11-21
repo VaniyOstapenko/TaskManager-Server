@@ -1,6 +1,6 @@
 const express = require('express');
 const { buildResponse } = require('../helper/buildRespone');
-const { getAllTasks, getTaskById, createTask, deleteTask, patchTaskById, updateTask } = require('../service/task.service');
+const { getAllTasks, getTaskById, createTask, deleteTask, updateTask, patchTaskById } = require('../service/task.service');
 const { isValidTaskBody, isValidId } = require('../helper/validation');
 
 const route = express.Router();
@@ -45,21 +45,21 @@ route.put('/:id', isValidId, isValidTaskBody, async (req, res) => {
   }
 });
 
-route.patch('/:id', isValidId, async (req, res) => {
+route.delete('/:id', isValidId, async (req, res) => {
   try {
     const { id } = req.params;
-    const clientObj = req.body;
-    const data = await patchTaskById(id, clientObj);
+    const data = await deleteTask(id);
     buildResponse(res, 200, data);
   } catch (error) {
     buildResponse(res, 404, error.message);
   }
 });
 
-route.delete('/:id', isValidId, async (req, res) => {
+route.patch('/:id', isValidId, async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await deleteTask(id);
+    const clientObj = req.body;
+    const data = await patchTaskById(id, clientObj);
     buildResponse(res, 200, data);
   } catch (error) {
     buildResponse(res, 404, error.message);

@@ -1,5 +1,5 @@
 const ExceptionType = require('../exception/exception');
-const { getAllUsersDB, createUsersDB, getUserByIdDB, updateUserByIdDB, patchUserByIdDB, deleteUserByIdDB } = require('../repository/user.repository');
+const { getAllUsersDB, createUsersDB, getUserByIdDB, updateUserByIdDB, deleteUserByIdDB, patchUserByIdDB } = require('../repository/user.repository');
 
 async function getAllUsers() {
   const data = await getAllUsersDB();
@@ -29,13 +29,6 @@ async function updateUserById(id, name, surname, email, pwd) {
   return data;
 }
 
-async function patchUserById(id, clientObj) {
-  const data = await patchUserByIdDB(id, clientObj);
-  if (!data.length) throw new Error(ExceptionType.DB_PATCH_USER_NOT_PATCH);
-
-  return data;
-}
-
 async function deleteUserById(id) {
   const data = await deleteUserByIdDB(id);
   if (!data.length) throw new Error(ExceptionType.DB_DELETE_USER_NOT_DELETE);
@@ -43,4 +36,11 @@ async function deleteUserById(id) {
   return data;
 }
 
-module.exports = { getAllUsers, createUsers, getUserById, updateUserById, patchUserById, deleteUserById };
+async function patchUserById(id, clientObj) {
+  const data = await patchUserByIdDB(id, clientObj);
+  if (!data.length) throw new Error(ExceptionType.DB_PATCH_USER_NOT_PATCH);
+
+  return data;
+}
+
+module.exports = { getAllUsers, createUsers, getUserById, updateUserById, deleteUserById, patchUserById };
