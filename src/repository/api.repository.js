@@ -2,21 +2,12 @@ const pool = require('../db');
 
 async function getUserByEmail(email) {
   const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
 
-    const sql = `SELECT * FROM users WHERE email =$1`;
+  const sql = `SELECT * FROM users WHERE email =$1`;
 
-    const data = (await client.query(sql, [email])).rows;
-    await client.query('COMMIT');
+  const data = (await client.query(sql, [email])).rows;
 
-    return data;
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.log(`getUserByEmail: ${error.message}`);
-
-    return [];
-  }
+  return data;
 }
 
 async function createUserDB(name, surname, email, hashPwd) {
