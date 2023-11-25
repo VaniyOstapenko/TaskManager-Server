@@ -23,6 +23,11 @@ const ExceptionType = {
   DB_PUT_USER_NOT_UPDATE: 'users does not update',
   DB_DELETE_USER_NOT_DELETE: 'users does not delete',
   DB_PATCH_USER_NOT_PATCH: 'users does not patch',
+
+  CHECKING_EMAIL_USER: 'user has already exist',
+  AVAILABILITY_OR_ABSENCE_OF_DATA_USER: 'not created',
+  CHECK_IF_THE_USER_EXIST: 'email not found',
+  PASSWORD_MATCH: 'password does not match',
 };
 
 module.exports = ExceptionType;
